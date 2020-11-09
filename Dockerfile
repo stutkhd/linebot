@@ -7,5 +7,8 @@ RUN apt-get update
 RUN pip install --upgrade pip \
 && pip install oauth2client gspread
 
-COPY . /app/
+# VOLUME /app
+
+ENTRYPOINT [ "/bin/bash" ]
+
 # flask line-bot-sdk

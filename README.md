@@ -2,6 +2,6 @@
 
 ## Docker setup
 ```
-docker build -f ./Dockerfile -t line/python .
-docker run -it line/python /bin/bash
+container up -----> dev
+open bash -------> dev-bash
 ```

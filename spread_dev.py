@@ -2,6 +2,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
 from datetime import date
+import locale
 
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
@@ -31,10 +32,38 @@ def detect_last_row(worksheet):
         row_count += 1
     return row_count
 
+title = 'test_day'
 if title not in worksheet_list:
     #新規sheet作成
     wb.duplicate_sheet(source_sheet_id = form.id, new_sheet_name = title, insert_sheet_index=1)
+    year = date.today().year
+    nengo = year-2018
+    dt = date(year, month, day)
+    locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
+    day_of_the_week = dt.strftime('%a')
+    info = [['課外活動団体名     ネットボール部','','','','',f'活動日:令和{nengo}年{month}月{day}日({day_of_the_week})']]
 
-now = ws.get_worksheet(2)
-#最後の行を取得
+    info_range = f'{title}!A3'
+    wb.values_update(
+        info_range, 
+        params={'valueInputOption': 'RAW'}, 
+        body={'values': info}
+    )
+
+now = wb.get_worksheet(1)
 last_row = detect_last_row(now)
+
+#入力
+student_number = 
+name = 
+temp = 
+
+my_list = [[student_number, name, temp]]
+Sheet_range = f'{title}!B{last_row}'
+wb.values_update(
+    Sheet_range, 
+    params={'valueInputOption': 'RAW'}, 
+    body={'values': my_list}
+)
+
+

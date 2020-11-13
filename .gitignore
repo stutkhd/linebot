@@ -1,2 +1,3 @@
 check-health.json
 .DS_Store
+.env.dev

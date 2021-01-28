@@ -1,8 +1,7 @@
-version: '3'
+version: '3.7'
 services:
   dev:
-    container_name: dev
-    image: line/python
+    container_name: line_dev
     build:
       context: .
       dockerfile: Dockerfile

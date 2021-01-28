@@ -16,54 +16,60 @@ month = date.today().month
 day = date.today().day
 title = f'{month}/{day}'
 
+"""
+workbook: １つのスプレッドシートファイル
+worksheet: スプレッドシートファイルのタブ
+"""
+
 #keyでworkbook取得 -> keyじゃないとコピーとかできないらしい
 wb = gc.open_by_key(sheet_key)
 worksheet_list = list(map(lambda x:x.title, wb.worksheets()))
-
-form = wb.get_worksheet(0)
-if len(worksheet_list) > 1:
-    ws1 = wb.get_worksheet(1) #一番最新の検温記録
-    ws1_title = ws1.title
+template_sheet = wb.get_worksheet(0)
 
 #正しく機能させるために1,2,3が抜けていた場合はエラーを吐くように入力フォームを注意する必要あり
-def detect_last_row(worksheet):
-    row_count = 5
+
+# 出力する行番号を取得
+def get_output_row(worksheet):
+    row_count = 5 # 入力は5行目から
+    # 学籍番号, 氏名, 当日の体温が入力されているか判定
     while worksheet.cell(row_count,2).value != "" or worksheet.cell(row_count,3).value != "" or worksheet.cell(row_count,4).value != "":
         row_count += 1
     return row_count
 
-title = 'test_day'
+#新規sheet作成
 if title not in worksheet_list:
-    #新規sheet作成
-    wb.duplicate_sheet(source_sheet_id = form.id, new_sheet_name = title, insert_sheet_index=1)
+    wb.duplicate_sheet(source_sheet_id = templat_sheet.id, new_sheet_name = title, insert_sheet_index=1) # templateから新しいsheetを追加
+
+    # 活動日の情報
     year = date.today().year
     nengo = year-2018
-    dt = date(year, month, day)
     locale.setlocale(locale.LC_TIME, 'ja_JP.UTF-8')
-    day_of_the_week = dt.strftime('%a')
+    day_of_the_week = date(year, month, day).strftime('%a')
+
     info = [['課外活動団体名     ネットボール部','','','','',f'活動日:令和{nengo}年{month}月{day}日({day_of_the_week})']]
 
     info_range = f'{title}!A3'
     wb.values_update(
-        info_range, 
-        params={'valueInputOption': 'RAW'}, 
+        info_range,
+        params={'valueInputOption': 'RAW'},
         body={'values': info}
     )
 
-now = wb.get_worksheet(1)
-last_row = detect_last_row(now)
+latest_sheet = wb.get_worksheet(1)
+last_row = get_output_row(latest_sheet)
 
 #入力
-student_number = 
-name = 
-temp = 
+student_number = 'a'
+name = 'b'
+temp = 'c'
 
 my_list = [[student_number, name, temp]]
-Sheet_range = f'{title}!B{last_row}'
+sheet_range = f'{title}!B{last_row}'
 wb.values_update(
-    Sheet_range, 
-    params={'valueInputOption': 'RAW'}, 
+    sheet_range,
+    params={'valueInputOption': 'RAW'},
     body={'values': my_list}
 )
+
 
 

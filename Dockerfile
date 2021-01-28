@@ -8,11 +8,9 @@ RUN apt-get update \
 && locale-gen \
 && update-locale LANG=ja_JP.UTF-8
 
-RUN pip install --upgrade pip \
-&& pip install oauth2client gspread google-api-python-client
+COPY ./requirements.txt /app/
 
-# VOLUME /app
-
-ENTRYPOINT [ "/bin/bash" ]
+RUN pip install -U pip \
+    && pip install -r requirements.txt
 
 # flask line-bot-sdk

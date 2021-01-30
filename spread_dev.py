@@ -1,6 +1,7 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+import sys
 from datetime import date
 import locale
 
@@ -9,8 +10,14 @@ scope = ['https://spreadsheets.google.com/feeds',
 
 credentials = ServiceAccountCredentials.from_json_keyfile_name(os.getenv('C_PATH'), scope)
 gc = gspread.authorize(credentials)
-sheet_name = 'test'
-wks = gc.open(sheet_name) #操作するスプシを指定する
+sheet_name = 'test-mika' # 共有したシートならなんでも可能
+
+try:
+    wks = gc.open(sheet_name) #操作するシートを指定する
+except gspread.exceptions.SpreadsheetNotFound:
+    print('そのシートは存在しません')
+    sys.exit()
+
 sheet_key = wks.id
 month = date.today().month
 day = date.today().day
@@ -38,7 +45,7 @@ def get_output_row(worksheet):
 
 #新規sheet作成
 if title not in worksheet_list:
-    wb.duplicate_sheet(source_sheet_id = templat_sheet.id, new_sheet_name = title, insert_sheet_index=1) # templateから新しいsheetを追加
+    wb.duplicate_sheet(source_sheet_id = template_sheet.id, new_sheet_name = title, insert_sheet_index=1) # templateから新しいsheetを追加
 
     # 活動日の情報
     year = date.today().year
